@@ -1,0 +1,15 @@
+.map-container {
+    position:absolute; 
+    width:60vw;
+    height:60vh;
+
+    }
+
+.popup {
+    width: 100px;
+    height: 100px;
+    border: solid black 2px;
+    color: black;
+    position: relative;
+    
+}
