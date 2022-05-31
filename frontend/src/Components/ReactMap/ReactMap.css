@@ -2,14 +2,14 @@
     position:absolute; 
     width:60vw;
     height:60vh;
-
-    }
+}
 
 .popup {
-    width: 100px;
-    height: 100px;
-    border: solid black 2px;
+    width: 200px;
     color: black;
-    position: relative;
-    
+    max-height: 100px;
+}
+
+.popup-button {
+    border: solid 1px black;
 }

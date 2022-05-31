@@ -4,13 +4,6 @@ import dataSet from '../../MockData'
 import './ReactMap.css'
 
 
-let cardPoints = dataSet.map(item => { return {latitude: item.lat , longitude: item.lng, id: item.id, grade: item.grade }}) 
-
-let locations = []
-
-locations = locations.concat(cardPoints)
-
-// const [treeId, setTreeId] = useState(0);
 
 export default function ReactMap() {
   
@@ -22,8 +15,7 @@ export default function ReactMap() {
       zoom: 10
   })   
 
-    const [selectedTree, setSelectedTree] = useState(dataSet[1])
-    const [showPopup, setShowPopup] = useState(false)
+    const [selectedTree, setSelectedTree] = useState(dataSet[0])
 
   return (
     <div className='map-container'>
@@ -40,34 +32,36 @@ export default function ReactMap() {
                   <button style={{width:'30px', height:'30px', backgroundColor:"blue"}} onClick={(e) => {
                     e.preventDefault();
                     setSelectedTree(tree);
-                    setShowPopup(true);
                   }}>
-                    <img src='./logo512.png'></img>
+                    {
+                      selectedTree.grade > 3 ? (
+                        <img src='./logo512.png'></img>
+                      ) : selectedTree.grade === 3 ? (
+                        <img src='./logo512.png'></img>
+                      ) : (
+                        <img src='./logo512.png'></img>
+                      )
+                    }
+                    
                   </button>
                 </Marker>
               ))
             }
 
             {
-                selectedTree === dataSet[selectedTree.id] ? (
+              selectedTree ? (
                   <Popup className='popup' key={selectedTree.id} latitude={selectedTree.lat} longitude={selectedTree.lng} anchor="bottom"
-                  onClose={() => setShowPopup(false)}>
-                    Treeeeeeeeeeeeeeee
+                  closeOnClick={false} closeOnMove={true}>
+                    <div>
+                      <h2>{selectedTree.treeName}</h2>
+                      <img src={selectedTree.src}></img>
+                      <p>Grade: {selectedTree.grade}</p>
+                      <p>Location: {selectedTree.location}</p>
+                      <button className='popup-button'>see more</button>
+                    </div>
                   </Popup>
-                // <div className='popup'>
-                //   Treeeeeeeeeeeeeeee
-                // </div>
-                // console.log([selectedTree, selectedTree.lng, selectedTree.lat])
               ) : null
-            }
-
-            
-              
-                {/* <Marker 
-                latitude={dataSet[0].lat} longitude={dataSet[0].lng} style={{width:'30px', height:'30px', backgroundColor:"red"}}>
-                  <img src='./logo512.png'></img>
-                </Marker>
-               */}
+              }
 
         </Map>
     </div>
