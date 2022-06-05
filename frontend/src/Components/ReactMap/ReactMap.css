@@ -13,3 +13,7 @@
 .popup-button {
     border: solid 1px black;
 }
+
+.popup img {
+    max-width: 40%;
+}

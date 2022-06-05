@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react'
 import Map, {Marker, Popup} from 'react-map-gl'
 import dataSet from '../../MockData'
+import { Link } from 'react-router-dom'
 import './ReactMap.css'
 
 
 
-export default function ReactMap() {
-  
+export default function ReactMap({sendIdToAppJs}) {
+
     const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGl0b2xlZG9yIiwiYSI6ImNsM3E1OHR5ZjA5NTYzY21zaG8xeGJxMHgifQ.quteS-bAH31Y61dhDnnClw'
 
     const [viewport, setViewport] = useState({
@@ -16,7 +17,7 @@ export default function ReactMap() {
   })   
 
     const [selectedTree, setSelectedTree] = useState(dataSet[0])
-
+    
   return (
     <div className='map-container'>
         <Map {...viewport} 
@@ -32,6 +33,7 @@ export default function ReactMap() {
                   <button style={{width:'30px', height:'30px', backgroundColor:"blue"}} onClick={(e) => {
                     e.preventDefault();
                     setSelectedTree(tree);
+                    sendIdToAppJs(tree.id)
                   }}>
                     {
                       selectedTree.grade > 3 ? (
@@ -57,7 +59,11 @@ export default function ReactMap() {
                       <img src={selectedTree.src}></img>
                       <p>Grade: {selectedTree.grade}</p>
                       <p>Location: {selectedTree.location}</p>
-                      <button className='popup-button'>see more</button>
+                      
+                      <Link to={`/treedetails/${selectedTree.id}` }>
+                        <button className='popup-button'>see more</button>
+                      </Link>
+                      
                     </div>
                   </Popup>
               ) : null
