@@ -6,6 +6,7 @@ import ErrorPage from './Components/ErrorPage';
 import TreeDetails from './Components/ReactMap/TreeDetails/TreeDetails';
 import { useEffect, useState } from 'react';
 import Upload from './Components/ReactMap/TreeDetails/Upload/Upload';
+import NewTree from './Components/ReactMap/NewTree/NewTree';
 
 
 function App() {
@@ -28,7 +29,8 @@ function App() {
             <Route path='/map' element={<ReactMap sendIdToAppJs={sendIdToAppJs}/>} />
             <Route path='*' element={<ErrorPage/>} />
             <Route path='/treedetails/:id' element={<TreeDetails treeId={treeId} />} />
-            <Route path='/treedetails/:id/upload' element={<Upload/>}/>
+            <Route path='/treedetails/:id/upload' element={<Upload treeId={treeId} />}/>
+            <Route path='/newtree' element={<NewTree/>}/>
           </Routes>
         
       </div>

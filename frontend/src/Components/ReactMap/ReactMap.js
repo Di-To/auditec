@@ -3,6 +3,8 @@ import Map, {Marker, Popup} from 'react-map-gl'
 import dataSet from '../../MockData'
 import { Link } from 'react-router-dom'
 import './ReactMap.css'
+import  {GreenPin, YellowPin, RedPin}  from './Pins'
+
 
 
 
@@ -24,32 +26,42 @@ export default function ReactMap({sendIdToAppJs}) {
             mapboxAccessToken={MAPBOX_TOKEN}
             mapStyle="mapbox://styles/mapbox/streets-v9"
             onMove={evt => setViewport(evt.viewport)}>
-            
+
+            {/* getting data from database and displaying it on the map */}
             {
               dataSet.map(tree => (
+                
+                
                 <Marker 
-                  key={tree.id} latitude={tree.lat} longitude={tree.lng} >
+                  key={tree.id} latitude={tree.lat} longitude={tree.lng} grade={tree.grade}>
                   
-                  <button style={{width:'30px', height:'30px', backgroundColor:"blue"}} onClick={(e) => {
-                    e.preventDefault();
-                    setSelectedTree(tree);
-                    sendIdToAppJs(tree.id)
-                  }}>
-                    {
-                      selectedTree.grade > 3 ? (
-                        <img src='./logo512.png'></img>
-                      ) : selectedTree.grade === 3 ? (
-                        <img src='./logo512.png'></img>
+                     {
+                      tree.grade > 3 ? (
+                        <button className='button green-button' onClick={(e) => {
+                          e.preventDefault();
+                          setSelectedTree(tree);
+                          sendIdToAppJs(tree.id)
+                        }}> </button>
+                      ) : tree.grade === 3 ? (
+                        <button className='button yellow-button' onClick={(e) => {
+                          e.preventDefault();
+                          setSelectedTree(tree);
+                          sendIdToAppJs(tree.id)
+                        }}> </button>
                       ) : (
-                        <img src='./logo512.png'></img>
+                        <button className='button red-button' onClick={(e) => {
+                          e.preventDefault();
+                          setSelectedTree(tree);
+                          sendIdToAppJs(tree.id)
+                        }}> </button>
                       )
-                    }
-                    
-                  </button>
+                    } 
+                                      
                 </Marker>
               ))
             }
 
+{/* Popup showin info from the provided trees */}
             {
               selectedTree ? (
                   <Popup className='popup' key={selectedTree.id} latitude={selectedTree.lat} longitude={selectedTree.lng} anchor="bottom"
@@ -70,6 +82,9 @@ export default function ReactMap({sendIdToAppJs}) {
               }
 
         </Map>
+        <Link to={'/newtree'}>
+          <button className='popup-button' style={{color:"black", marginTop:"20px"}}>New Entry</button>
+        </Link>
     </div>
   )
 }

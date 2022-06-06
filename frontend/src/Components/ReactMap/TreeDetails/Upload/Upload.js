@@ -1,18 +1,18 @@
 import React, {useState, useEffect} from 'react'
-// import { Icon } from '@iconify/react'
 import './Upload.css'
 import ImageUploading from 'react-images-uploading'
 import Camera from 'react-html5-camera-photo'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 
 export default function Upload() {
 
     const [initialPosition, setInitialPosition] = useState({lat:null, lng:null})
-    
-    const [lat, setLat] = useState(0)
 
-    const [lng, setLng] = useState(0)
+    const {id} = useParams()
 
-    function setLocation () {
+    const navigate = useNavigate()
+
+    const setLocation = () => {
         navigator.geolocation.getCurrentPosition((position) => {
             const newPos = {
                 lat: position.coords.latitude,
@@ -24,7 +24,7 @@ export default function Upload() {
     )}
 
     useEffect(() => {
-        console.log(lat)
+        console.log({id})
     }, [])
 
     function handleTakePhoto(dataUri) {
@@ -32,7 +32,8 @@ export default function Upload() {
     }
 
     return (
-    <div className='upload-container'>
+    <div className='flex flex-col md:flex-row lg:flex-row w-100 h-100 '>
+        <button onClick={() => navigate(-1)} style={{border:'solid black 2px', width:'200px', margin:'20px'}}> Back </button>
         <div className='image-container border'>
             <div className='image-shadow'>
                 <div className='camera-container'>
@@ -48,22 +49,28 @@ export default function Upload() {
         <div className='report-container border'>
             <h2>Info</h2>
             <div className='inner-info-container'>
-                <form>
-                    Park: <input type={"text"}></input>  
-                </form>
-                <form>
-                    Grade: <input type={"text"}></input>
-                </form>
-                <form>
-                    Latitude: {initialPosition.lat}
-                </form>
-                <form>
-                    Longitude: {initialPosition.lng}
-                </form>
+
+                <div> 
+                    <form>
+                        Park: <input type={"text"} style={{color:"black"}} disabled></input>  
+                    </form>
+                    <form>
+                        Grade: <input type={"text"} style={{color:"black"}} disabled></input>
+                    </form>
+                    <form>
+                        Latitude: {initialPosition.lat}
+                    </form>
+                    <form>
+                        Longitude: {initialPosition.lng}
+                    </form>
+                </div>
+                
                 <form>
                     <p>Details:</p> 
                     <textarea rows={4} cols={40}></textarea>
-                    <input type={"submit"}></input>
+                    <button>
+                        <input type={"submit"}></input>
+                    </button>
                 </form>
             </div>
         </div>

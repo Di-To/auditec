@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 // import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 
-export default function TreeDetails(treeId) {
+export default function TreeDetails() {
     
     const {id} = useParams()
 
@@ -33,7 +33,6 @@ export default function TreeDetails(treeId) {
          )
     }
 
-    // evaluateContract(current.grade)
 
     useEffect( () => {
         evaluateContract(current.grade)
