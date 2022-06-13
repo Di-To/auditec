@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import Map, {Marker, Popup} from 'react-map-gl'
-import dataSet from '../MockData'
+// import dataSet from '../MockData'
 import styles from '../styles/Reactmap.module.css'
 import "mapbox-gl/dist/mapbox-gl.css"
 import Link from 'next/link'
@@ -8,6 +8,7 @@ import Link from 'next/link'
 
 
 export default function ReactMap({sendIdToAppJs}) {
+
 
     const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGl0b2xlZG9yIiwiYSI6ImNsM3E1OHR5ZjA5NTYzY21zaG8xeGJxMHgifQ.quteS-bAH31Y61dhDnnClw'
 
@@ -17,7 +18,17 @@ export default function ReactMap({sendIdToAppJs}) {
       zoom: 10
   })   
 
-    const [selectedTree, setSelectedTree] = useState(dataSet[0])
+  const [fetchedData, setFetchedData] = useState([])
+
+  useEffect(() =>{
+    fetch('/api/reactmap')
+      .then((res) => res.json())
+      .then((data) => {
+        setFetchedData(data.dataSet)
+      }) 
+    },[])  
+
+  const [selectedTree, setSelectedTree] = useState(fetchedData[0])
     
   return (
     <div className={styles.mapPage}>
@@ -29,7 +40,7 @@ export default function ReactMap({sendIdToAppJs}) {
 
               {/* getting data from database and displaying it on the map */}
               {
-                dataSet.map(tree => (
+                fetchedData.map(tree => (
                   
                   
                   <Marker 
