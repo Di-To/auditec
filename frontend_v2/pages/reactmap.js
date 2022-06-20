@@ -1,20 +1,34 @@
 import React, {useState, useEffect} from 'react'
 import Map, {Marker, Popup} from 'react-map-gl'
-// import dataSet from '../MockData'
+// import daçtaSet from '../MockData'
 import styles from '../styles/Reactmap.module.css'
 import "mapbox-gl/dist/mapbox-gl.css"
 import Link from 'next/link'
 
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient();
+
+export async function getServerSideProps(){
+
+  const trees = await prisma.tree.findMany();
+
+  return {
+    props: {
+      initialTrees: JSON.parse(JSON.stringify(trees))
+    }
+  }
+}
 
 
-export default function ReactMap({sendIdToAppJs}) {
+export default function ReactMap({initialTrees}) {
 
 
     const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGl0b2xlZG9yIiwiYSI6ImNsM3E1OHR5ZjA5NTYzY21zaG8xeGJxMHgifQ.quteS-bAH31Y61dhDnnClw'
 
     const [viewport, setViewport] = useState({
-      latitude: 51.9271764,
-      longitude: -8.5991461,
+      latitude: initialTrees[0].latitude,
+      longitude: initialTrees[0].longitude,
       zoom: 10
   })   
 
@@ -93,7 +107,7 @@ export default function ReactMap({sendIdToAppJs}) {
                 }
 
           </Map>
-          <Link href={'/newtree'}>
+          <Link href={'/newentry'}>
             <button className={styles.popupButton} style={{color:"black", marginTop:"20px"}}>New Entry</button>
           </Link>
       </div>

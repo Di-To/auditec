@@ -11,15 +11,27 @@ export default function TreeDetails() {
 
     const {treeid} = router.query
     
-    if(!router.isReady) {
-        return <></>;
-    }
+    // if(!router.isReady) {
+    //     return <></>;
+    // }
+    // option 2. Tree id is not set. tips: 
+
+    useEffect(()=>{
+        console.log(router.query)
+        if (router.query.treeid) {
+            setCurrent(allQualifications[treeid][dataLength])
+        }
+    },[router.query])
     
+    
+
     const [allQualifications, setallQualifications] = useState(trees_data)
+    
 
     const dataLength = allQualifications.length + 1
 
-    let current = allQualifications[treeid][dataLength]
+    // let current = allQualifications[1][dataLength]
+    const [current, setCurrent] = useState(null)
     
     // useEffect( () => {console.log(allQualifications)})
     // useEffect( () => {console.log(dataLength)})
@@ -28,6 +40,7 @@ export default function TreeDetails() {
 
     const [avidingByContract, setAvidingByContract] = useState(true)
 
+    
     function evaluateContract(grade) {
         grade > 3 ? (
             setAvidingByContract(true)
@@ -37,11 +50,16 @@ export default function TreeDetails() {
     }
 
 
-    useEffect( () => {
-        evaluateContract(current.grade)
-        }, []
+    useEffect(() => {
+        if (current) {
+            evaluateContract(current.grade)
+            }
+        }, [current]
     )
 
+    if(current == null) {
+        return <></>;
+    }
     
 
     return (
