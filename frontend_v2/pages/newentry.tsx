@@ -1,18 +1,44 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import styles from '../styles/Newentry.module.css'
 import ImageUploading from 'react-images-uploading'
 import Camera from 'react-html5-camera-photo'
 import Link from 'next/link'
+import AddTreeForm from '../components/AddNewTreeForm'
+import { PrismaClient, Tree, Prisma } from '@prisma/client';
 
-export default function NewTree() {
+const prisma = new PrismaClient();
 
-    const regions = ['Metropolitana', 'Arica', 'Antofagasta', 'Valparaiso', 'Los Rios', 'Los Lagos', 'Magallanes']
-    const metroCities = ['Santiago']
-    const ariCities = ['Ciudad de Arica', 'Parinacota', 'Putre']
-    const antoCities = ['Ciudad de Antofagasta', 'Ciudad de Calama', 'Ciudad de Tocopilla']
-    const valpoCities = ['Viña del Mar', 'Valparaiso', 'Quillota']
+export async function getServerSideProps(){
+    const trees: Tree[] = await prisma.tree.findMany();
+
+    return {
+        props: {
+            initialTrees: trees
+        }
+    };
+}
+
+async function saveTree(tree: Prisma.TreeCreateInput) {
+    const response = await fetch('api/newentry', {
+        method: 'POST',
+        body: JSON.stringify(tree)
+    });
+    
+    if (!response.ok) {
+        throw new Error(response.statusText);
+    }
+
+    return await response.json();
+}
+
+export default function NewTree({initialTree}) {
 
     const [initialPosition, setInitialPosition] = useState({lat:null, lng:null})
+
+    const [trees, setTree] = useState(initialTree)
+    
+
+    const formRef = useRef();
 
     useEffect(() => {
         console.log(initialPosition);
@@ -37,18 +63,7 @@ export default function NewTree() {
         console.log("click");
     }
 
-    async function saveTree(tree) {
-        const response = await fetch('api/newentry', {
-            method: 'POST',
-            body: JSON.stringify(tree)
-        });
-        
-        if (!response.ok) {
-            throw new Error(response.statusText);
-        }
 
-        return await response.json();
-    }
 
 // REMEMBER TO MOVE TO A COMPONENT LATER
 
@@ -63,7 +78,7 @@ export default function NewTree() {
         </Link>
         <div className='flex flex-col md:flex-row lg:flex-row w-100 h-100 '>
 
-            <div className={styles.imageContainer}>
+            {/* <div className={styles.imageContainer}>
                 <div className={styles.imageShadow}>
                     <div className={styles.cameraContainer}>
                         <Camera className={styles.camera} style="display:inline-block" idealResolution = {{width: 320, height: 240}} isFullscreen={false} onTakePhoto={(dataUri) => {handleTakePhoto(dataUri)}}> </Camera>
@@ -74,40 +89,44 @@ export default function NewTree() {
                         <button className={styles.uploadButton}></button>
                     </div>
                 </div>
-            </div>
+            </div> */}
             <div className='ml-4 p-4'>
                 <h2>Info</h2>
                 <div>
                 
-                    <div> 
-                        <form className='flex flex-col justify-between'>
-                            <label htmlFor='region'>Region:
-                                {/* <select multiple={true} value={['A', 'B']}></select> */}
+                    <div ref={formRef}> 
+                        <AddTreeForm 
+                            onSubmit={ async (data, e) => {
+                                try {
+                                    await saveTree(data);
+                                    setTree([...trees, data]);
+                                    e.target.reset();
+                                } catch (err) {
+                                    console.log(err)
+                                }
+                            }}/>
+                        {/* <form className='flex flex-col justify-between' >
+                            <label htmlFor='region' name='region'>Region:
                                 <input type={"text"}></input>
                             </label>
-                            {/* <label htmlFor="city">City: 
-                                <input type={"text"}></input>
-                            </label> */}
-                            <label htmlFor="municipality">Municipality: 
+                            <label htmlFor="municipality" name="municipality">Municipality: 
                                 <input type={"text"}></input>
                             </label>
-                            <label htmlFor="park">Park: 
+                            <label htmlFor="park" name="park">Park: 
                                 <input type={"text"}></input>
                             </label>
-                            <label htmlFor='image'>Photo:
+                            <label htmlFor='image' name="image">Photo:
                                 <input type={'text'}></input>
                             </label>
-                            <label htmlFor="latitude">Latitude:
+                            <label htmlFor="latitude" name="latitude">Latitude:
                                 <input type={'text'} value={initialPosition.lat}/>
                             </label>
-                            <label htmlFor="longitude">Longitude:
+                            <label htmlFor="longitude" name="longitude">Longitude:
                                 <input type={'text'} value={initialPosition.lng}/>
                             </label>
-                        </form>
+                        </form> */}
                         <button className='border-solid border-2 border-black' onClick={() => {setLocation()}}>Set coordinates</button>
-                        <button className='ml-5 border-solid border-2 border-black'>
-                            <input type={"submit"}></input>
-                        </button>
+
                     </div>
                 </div>
             </div>
