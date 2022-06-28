@@ -13,7 +13,7 @@ export async function getServerSideProps(){
 
     return {
         props: {
-            initialTrees: trees
+            initialTrees: JSON.parse(JSON.stringify(trees))
         }
     };
 }
@@ -26,7 +26,7 @@ async function saveTree(tree: Prisma.TreeCreateInput) {
     
     if (!response.ok) {
         throw new Error(response.statusText);
-    }
+    } else (console.log("nice!"))
 
     return await response.json();
 }
@@ -39,11 +39,6 @@ export default function NewTree({initialTree}) {
     
 
     const formRef = useRef();
-
-    useEffect(() => {
-        console.log(initialPosition);
-      }, [initialPosition]);
-    
 
     const setLocation = () => {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -62,8 +57,6 @@ export default function NewTree({initialTree}) {
     function handleTakePhoto(dataUri) {
         console.log("click");
     }
-
-
 
 // REMEMBER TO MOVE TO A COMPONENT LATER
 

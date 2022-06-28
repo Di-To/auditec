@@ -11,11 +11,11 @@ datasource db {
 }
 
 model Tree {
-  id           String @id @default(cuid())
+  id           String  @id @default(cuid())
   region       String
   municipality String
   park         String
   picture      String
-  latitute     Float
-  longitude    Float
+  latitude     Decimal
+  longitude    Decimal
 }

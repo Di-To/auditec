@@ -1,5 +1,5 @@
 // import { useForm } from '../node_modules/react-hook-form/dist/useForm';
-import {useForm} from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import Input from './Input';
 import InputSpacer from './InputSpacer';
 
@@ -14,49 +14,51 @@ interface AddTreeFormProps {
 
 export default function AddTreeForm(props: AddTreeFormProps) {
   const { register, handleSubmit, formState: {errors} } = useForm();
+  const onSubmit: SubmitHandler<AddTreeFormProps> = data => console.log(data);
+
   return (
-    <form className="flex flex-col" onSubmit={handleSubmit(props.onSubmit)}>
+    <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
 
         <Input
-          placeholder="Cork"
-          name="region"
-          formRef={register("Something")}
+          // placeholder="Cork"
+          // name="region"
+          // formRef={register("Something", {required:true})}
         />
         {errors.region && (<FormError errorMessage="Region is required" />)}
 
 
         <Input
-          placeholder="Blarney or sth"
-          name="municipality"
-          formRef={register("Something")}
+          // placeholder="Blarney or sth"
+          // name="municipality"
+          // formRef={register("Something")}
         />
         {errors.municipality && <FormError errorMessage="Municipality is required" />}
 
         <Input
-          placeholder="Waterloo"
-          name="park"
-          formRef={register("Something")}
+          // placeholder="Waterloo"
+          // name="park"
+          // formRef={register("Something")}
         />
         {errors.park && <FormError errorMessage="Park is required" />}
 
         <Input
-          placeholder="Image"
-          name="image"
-          formRef={register("Something")}
+          // placeholder="Image"
+          // name="image"
+          // formRef={register("Something")}
         />
         {errors.avatar && <FormError errorMessage="Avatar is required" />}
 
         <Input
-          placeholder="Latitude"
-          name="latitude"
-          formRef={register("Something")}
+          // placeholder="Latitude"
+          // name="latitude"
+          // formRef={register("Something")}
         />
         {errors.latitude && <FormError errorMessage="Latitude is required" />}
 
         <Input
-          placeholder="Longitude"
-          name="longitude"
-          formRef={register("Something")}
+          // placeholder="Longitude"
+          // name="longitude"
+          // formRef={register("Something")}
         />
         {errors.longitude && <FormError errorMessage="Longitude is required" />}
       
