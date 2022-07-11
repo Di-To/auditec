@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import Map, {Marker, Popup} from 'react-map-gl'
-// import daçtaSet from '../MockData'
+import dataSet from '../MockData'
 import styles from '../styles/Reactmap.module.css'
 import "mapbox-gl/dist/mapbox-gl.css"
 import Link from 'next/link'
@@ -23,7 +23,9 @@ export async function getServerSideProps(){
 
 export default function ReactMap({initialTrees}) {
 
-
+    useEffect(()=> {
+      console.log(initialTrees)
+    })
     const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGl0b2xlZG9yIiwiYSI6ImNsM3E1OHR5ZjA5NTYzY21zaG8xeGJxMHgifQ.quteS-bAH31Y61dhDnnClw'
 
     const [viewport, setViewport] = useState({
@@ -34,14 +36,18 @@ export default function ReactMap({initialTrees}) {
 
   const [fetchedData, setFetchedData] = useState([])
 
-  useEffect(() =>{
-    fetch('/api/reactmap')
-      .then((res) => res.json())
-      .then((data) => {
-        setFetchedData(data.dataSet)
-      }) 
-    },[])  
-
+  // useEffect(() =>{
+  //   fetch('/api/reactmap')
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setFetchedData(data.dataSet)
+  //     }) 
+  // },[])  
+  
+  useEffect(()=>{
+    console.log(initialTrees)
+  })
+  
   const [selectedTree, setSelectedTree] = useState(fetchedData[0])
     
   return (
@@ -54,11 +60,11 @@ export default function ReactMap({initialTrees}) {
 
               {/* getting data from database and displaying it on the map */}
               {
-                fetchedData.map(tree => (
+                initialTrees.map(tree => (
                   
                   
                   <Marker 
-                    key={tree.id} latitude={tree.lat} longitude={tree.lng} grade={tree.grade}>
+                    key={tree.id} latitude={tree.latitude} longitude={tree.longitude} grade={5}>
                     
                       {
                         tree.grade > 3 ? (
@@ -89,13 +95,14 @@ export default function ReactMap({initialTrees}) {
   {/* Popup showin info from the provided trees */}
               {
                 selectedTree ? (
-                    <Popup className={styles.popup} key={selectedTree.id} latitude={selectedTree.lat} longitude={selectedTree.lng} anchor="bottom"
+                    <Popup className={styles.popup} key={selectedTree.id} latitude={selectedTree.latitude} longitude={selectedTree.longitude} anchor="bottom"
                     closeOnClick={false} closeOnMove={true}>
                       <div>
-                        <h2>{selectedTree.treeName}</h2>
-                        <img src={selectedTree.src}></img>
+                        <h2>{selectedTree.park}</h2>
+                        {/* <img src={selectedTree.src}></img> */}
                         <p>Grade: {selectedTree.grade}</p>
-                        <p>Location: {selectedTree.location}</p>
+                        <p>Location: {selectedTree.park}</p>
+                        <p>id: {selectedTree.id}</p>
                         
                         <Link href={`/treedetails/${selectedTree.id}` } key={selectedTree.id}>
                           <button className={styles.popupButton}>see more</button>

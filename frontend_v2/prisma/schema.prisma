@@ -11,11 +11,21 @@ datasource db {
 }
 
 model Tree {
-  id           String  @id @default(cuid())
+  id           Int      @id @default(autoincrement())
+  details      Details?
   region       String
   municipality String
   park         String
-  picture      String
   latitude     Decimal
   longitude    Decimal
+
+}
+
+model Details {
+  id      Int      @id @default(autoincrement())
+  tree    Tree     @relation(fields: [treeId], references: [id])
+  treeId  Int      @unique
+  picture String
+  grade   Int
+  time    DateTime
 }

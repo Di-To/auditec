@@ -14,7 +14,7 @@ interface InputProps {
       <input
         className="rounded p-2 text-xl w-full mb-2"
         {...register("formRef")}
-        // name={props.name}
+        name="hello"
         placeholder="something"
         // ref={props.formRef}
       />

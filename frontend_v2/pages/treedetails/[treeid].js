@@ -3,10 +3,44 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import styles from '../../styles/Treedetails.module.css'
 import trees_data from '../../MockDataFirst';
+import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient
 
-export default function TreeDetails() {
+export async function getStaticProps({params}) {
     
+    
+    const uniqueTree = await prisma.tree.findUnique({
+        where: {
+          id: Number(params.treeid),  
+        },
+    })
+
+    return {
+        props: {
+            treeDetails: JSON.parse(JSON.stringify(uniqueTree)),
+        },
+        
+    }
+}
+
+export async function getStaticPaths(){
+        
+    const res = await prisma.tree.findMany();
+    
+    return {
+    paths: res.map((unique) => ({
+        params: {
+            treeid: unique.id.toString(),
+        }
+    })),
+    fallback: false
+    }
+}
+
+export default function TreeDetails({treeDetails}) {
+    
+
     const router = useRouter()
 
     const {treeid} = router.query
@@ -17,15 +51,16 @@ export default function TreeDetails() {
     // option 2. Tree id is not set. tips: 
 
     useEffect(()=>{
-        console.log(router.query)
-        if (router.query.treeid) {
-            setCurrent(allQualifications[treeid][dataLength])
+        console.log(treeDetails)
+        if (treeDetails) {
+            setCurrent(treeDetails)
         }
-    },[router.query])
+        console.log(current)
+    },[treeDetails])
     
     
 
-    const [allQualifications, setallQualifications] = useState(trees_data)
+    const [allQualifications, setallQualifications] = useState(treeDetails)
     
 
     const dataLength = allQualifications.length + 1
@@ -65,12 +100,13 @@ export default function TreeDetails() {
     return (
         
         <div className={styles.treeDetailContainer}>
-           <div>
-                    <img src={allQualifications[treeid][dataLength].src} style={{width:"300px", height:"400px"}}></img>
-                    <p>Tree located in: Park {current.treeName}</p>
-                    <p>Pic upload: {current.date}</p>
-                    <p>Current grade: {current.grade}</p>
-                    {
+           <div className={styles.infoContainer}>
+                    {/* <img src={allQualifications[treeid][dataLength].src} style={{width:"300px", height:"400px"}}></img> */}
+                    <p>Tree located in: Region {current.region}</p>
+                    <p>Id: {current.id}</p>
+                    <p>latitude: {current.latitude}</p>
+                    <p>longitude: {current.longitude}</p>
+                    {/*
                         
                          avidingByContract ? (
                              <p>Does it comply: YES</p>
@@ -78,7 +114,7 @@ export default function TreeDetails() {
                              <p>Does it comply: NO</p>
                          )
                         
-                    }
+                         */}
                     
                 </div>
                 <button onClick={() => {router.reload()}}>
