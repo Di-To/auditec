@@ -11,7 +11,12 @@ const prisma = new PrismaClient();
 
 export async function getServerSideProps(){
 
-  const trees = await prisma.tree.findMany();
+  // 
+  const trees = await prisma.tree.findMany({
+    include: {
+      details: true,
+    }
+  });
 
   return {
     props: {
@@ -26,6 +31,7 @@ export default function ReactMap({initialTrees}) {
     useEffect(()=> {
       console.log(initialTrees)
     })
+
     const MAPBOX_TOKEN = 'pk.eyJ1IjoiZGl0b2xlZG9yIiwiYSI6ImNsM3E1OHR5ZjA5NTYzY21zaG8xeGJxMHgifQ.quteS-bAH31Y61dhDnnClw'
 
     const [viewport, setViewport] = useState({
