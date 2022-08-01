@@ -2,11 +2,14 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
+import { signIn, signOut } from 'next-auth/react'
 
 const navigation = [
   { name: 'About', href: '/about', current: true },
   { name: 'Map', href: '/reactmap', current: false },
   { name: 'Stats', href: '#', current: false },
+  { name: 'SignIn', href: '/api/auth/signin', current: false },
+  { name: 'SignOut', href: '/api/auth/signout', current: false },
 ]
 
 function classNames(...classes) {
@@ -54,8 +57,7 @@ export default function NavBar() {
                           item.current ? 'bg-gray-900 text-white' : 'text-black-300 hover:bg-gray-700 hover:text-white',
                           'px-3 py-2 rounded-md text-sm font-medium'
                         )}
-                        aria-current={item.current ? 'page' : undefined}
-                      >
+                        aria-current={item.current ? 'page' : undefined}>
                         {item.name}
                       </a>
                     ))}

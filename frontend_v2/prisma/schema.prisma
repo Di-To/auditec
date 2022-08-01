@@ -11,8 +11,8 @@ datasource db {
 }
 
 model Tree {
-  id           Int      @id @default(autoincrement())
-  details      Details?
+  id           Int       @id @default(autoincrement())
+  details      Details[]
   region       String
   municipality String
   park         String
@@ -24,7 +24,7 @@ model Tree {
 model Details {
   id      Int      @id @default(autoincrement())
   tree    Tree     @relation(fields: [treeId], references: [id])
-  treeId  Int      @unique
+  treeId  Int
   picture String
   grade   Int
   time    DateTime
