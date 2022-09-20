@@ -61,21 +61,33 @@ model Zone {
 }
 
 model ZoneEvaluation {
-  id               Int    @id @default(autoincrement())
+  id               Int         @id @default(autoincrement())
   zoneName         String
-  zone             Zone   @relation(fields: [zoneEvaluationId], references: [id])
+  zone             Zone        @relation(fields: [zoneEvaluationId], references: [id])
   zoneEvaluationId Int
+  greenArea        GreenArea[]
 }
 
 model GreenArea {
+  id               Int            @id @default(autoincrement())
+  zone             Zone           @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  zoneEvaluation   ZoneEvaluation @relation(fields: [zoneEvaluationId], references: [id], onDelete: Cascade)
+  zoneId           Int
+  zoneEvaluationId Int
+  parkName         String
+  location         String
+  surface          Decimal
+  latitude         Decimal
+  longitude        Decimal
+  evaluation       Evaluation[]
+}
+
+model Evaluation {
   id             Int              @id @default(autoincrement())
-  zone           Zone             @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  zoneId         Int
-  parkName       String
-  location       String
-  surface        Decimal
-  latitude       Decimal
-  longitude      Decimal
+  greenArea      GreenArea        @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  evaluationId   Int
+  date           DateTime
+  observation    String
   grass          Grass[]
   trees          Trees[]
   infrastructure Infrastructure[]
@@ -86,10 +98,10 @@ model GreenArea {
 }
 
 model Grass {
-  id        Int         @id @default(autoincrement())
-  greenArea GreenArea   @relation(fields: [grassId], references: [id], onDelete: Cascade)
-  grassId   Int
-  grassEval GrassEval[]
+  id         Int         @id @default(autoincrement())
+  evaluation Evaluation  @relation(fields: [grassId], references: [id], onDelete: Cascade)
+  grassId    Int
+  grassEval  GrassEval[]
 }
 
 model GrassEval {
@@ -105,10 +117,10 @@ model GrassEval {
 }
 
 model Trees {
-  id        Int         @id @default(autoincrement())
-  greenArea GreenArea   @relation(fields: [treesId], references: [id], onDelete: Cascade)
-  treesId   Int
-  treesEval TreesEval[]
+  id         Int         @id @default(autoincrement())
+  evaluation Evaluation  @relation(fields: [treesId], references: [id], onDelete: Cascade)
+  treesId    Int
+  treesEval  TreesEval[]
 }
 
 model TreesEval {
@@ -125,7 +137,7 @@ model TreesEval {
 
 model Infrastructure {
   id                 Int                  @id @default(autoincrement())
-  GreenArea          GreenArea            @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
+  evaluation         Evaluation           @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
   greenAreaId        Int
   infrastructureEval InfrastructureEval[]
 }
@@ -144,7 +156,7 @@ model InfrastructureEval {
 
 model FloorCovers {
   id              Int               @id @default(autoincrement())
-  GreenArea       GreenArea         @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
+  evaluation      Evaluation        @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
   greenAreaId     Int
   floorCoversEval FloorCoversEval[]
 }
@@ -163,7 +175,7 @@ model FloorCoversEval {
 
 model SideWalks {
   id            Int             @id @default(autoincrement())
-  GreenArea     GreenArea       @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
+  evaluation    Evaluation      @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
   greenAreaId   Int
   sideWalksEval SideWalksEval[]
 }
@@ -182,7 +194,7 @@ model SideWalksEval {
 
 model Cleaning {
   id           Int            @id @default(autoincrement())
-  GreenArea    GreenArea      @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
+  evaluation   Evaluation     @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
   greenAreaId  Int
   cleaningEval CleaningEval[]
 }
@@ -201,7 +213,7 @@ model CleaningEval {
 
 model SeasonFlowers {
   id                  Int                 @id @default(autoincrement())
-  GreenArea           GreenArea           @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
+  evaluation          Evaluation          @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
   greenAreaId         Int
   seasonalFlowersEval SeasonFlowersEval[]
 }
