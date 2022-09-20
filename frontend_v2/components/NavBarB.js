@@ -6,17 +6,17 @@ export default function NavBarB() {
   const {data: session} = useSession()
   const [isOpen, setIsOpen] = useState(false)
   const myRef = useRef();
-  const handleClickOutside = e => {
-    if (!myRef.current.contains(e.target)) {
-      setIsOpen(false)
-    }
-  }
+  // const handleClickOutside = e => {
+  //   if (!myRef.current.contains(e.target)) {
+  //     setIsOpen(false)
+  //   }
+  //}
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-    console.log(isOpen)
-  })
+  // useEffect(() => {
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside)
+  //   console.log(isOpen)
+  // })
 
   return (
     <>
@@ -28,6 +28,8 @@ export default function NavBarB() {
                           <a className="flex-shrink-0" href="/">
                               {/* <img class="h-8 w-8" src="/icons/rocket.svg" alt="Workflow"/> */}
                           </a>
+
+                          { session && (
                           <div className="hidden md:block">
                               <div className="ml-10 flex items-baseline space-x-4">
                                   <a className="text-black-900 hover:bg-gray-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" href="/about">
@@ -36,7 +38,7 @@ export default function NavBarB() {
                                   <a className="text-black-900 hover:bg-gray-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" href="/reactmap">
                                       Map
                                   </a>
-                                  <a className="text-black-900 hover:bg-gray-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" href="/#">
+                                  <a className="text-black-900 hover:bg-gray-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" href="/stats">
                                       Stats
                                   </a>
                                   <a className="text-black-900 hover:bg-gray-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" href="/#">
@@ -44,6 +46,7 @@ export default function NavBarB() {
                                   </a>
                               </div>
                           </div>
+                          )}
                       </div>
                       <div className="block">
                           <div className="ml-4 flex items-center md:ml-6 ">
