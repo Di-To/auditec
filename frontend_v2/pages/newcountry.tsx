@@ -3,25 +3,27 @@ import styles from '../styles/Newentry.module.css'
 import ImageUploading from 'react-images-uploading'
 import Camera from 'react-html5-camera-photo'
 import Link from 'next/link'
-import AddTreeForm from '../components/AddNewTreeForm'
-import { PrismaClient, Tree, Prisma } from '@prisma/client';
+import AddCountryForm from '../components/AddNewCountryForm'
+import { PrismaClient, Tree, Prisma, GreenArea, Municipality, Country } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export async function getServerSideProps(){
-    const trees: Tree[] = await prisma.tree.findMany();
-
+    const country: Country[] = await prisma.country.findMany();
+    
     return {
         props: {
-            initialTrees: JSON.parse(JSON.stringify(trees))
+            initialPark: JSON.parse(JSON.stringify(country))
         }
     };
 }
 
-async function saveTree(tree: Prisma.TreeCreateInput) {
-    const response = await fetch('api/newentry', {
+
+
+async function saveCountry(pais: Prisma.CountryCreateInput) {
+    const response = await fetch('/api/newcountry', {
         method: 'POST',
-        body: JSON.stringify(tree)
+        body: JSON.stringify(pais)
     });
     
     if (!response.ok) {
@@ -31,15 +33,20 @@ async function saveTree(tree: Prisma.TreeCreateInput) {
     return await response.json();
 }
 
-export default function NewTree({initialTree}) {
 
-    const [trees, setTree] = useState(initialTree)
+export default function NewMuni({initialCountry}) {
+    
+    const [country, setCountry] = useState(initialCountry)
 
     const formRef = useRef();
 
     function handleTakePhoto(dataUri) {
         console.log("click");
     }
+
+    // useEffect(()=>{
+    //     console.log(greenAreas)
+    // })
 
 // REMEMBER TO MOVE TO A COMPONENT LATER
 
@@ -55,16 +62,15 @@ export default function NewTree({initialTree}) {
                 <div>
                 
                     <div> 
-                        <AddTreeForm 
+                        <AddCountryForm 
                             onSubmit={ async (data) => {
                                 try {
-                                    await saveTree(data);
-                                    setTree([...trees, data]);
+                                    await saveCountry(data);
+                                    setCountry([...country, data]);
                                 } catch (err) {
                                     console.log(err)
                                 }
                             }}/>
-
                     </div>
                 </div>
             </div>

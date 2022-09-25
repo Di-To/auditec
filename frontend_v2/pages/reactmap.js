@@ -22,41 +22,45 @@ export async function getServerSideProps() {
     include: {
       zone: {
         include: {
-          greenArea: {
+          zoneEvaluation: {
             include: {
-              grass: {
+              greenArea: {
                 include: {
-                  grassEval: true,
-                },
-              },
-              trees: {
-                include: {
-                  treesEval: true,
-                },
-              },
-              infrastructure: {
-                include: {
-                  infrastructureEval: true,
-                },
-              },
-              floorCovers: {
-                include: {
-                  floorCoversEval: true,
-                },
-              },
-              sideWalks: {
-                include: {
-                  sideWalksEval: true,
-                },
-              },
-              cleaning: {
-                include: {
-                  cleaningEval: true,
-                },
-              },
-              seasonFlowers: {
-                include: {
-                  seasonalFlowersEval: true,
+                  grass: {
+                    include: {
+                      grassEval: true,
+                    },
+                  },
+                  trees: {
+                    include: {
+                      treesEval: true,
+                    },
+                  },
+                  infrastructure: {
+                    include: {
+                      infrastructureEval: true,
+                    },
+                  },
+                  floorCovers: {
+                    include: {
+                      floorCoversEval: true,
+                    },
+                  },
+                  sideWalks: {
+                    include: {
+                      sideWalksEval: true,
+                    },
+                  },
+                  cleaning: {
+                    include: {
+                      cleaningEval: true,
+                    },
+                  },
+                  seasonFlowers: {
+                    include: {
+                      seasonalFlowersEval: true,
+                    },
+                  },
                 },
               },
             },
@@ -77,28 +81,29 @@ export async function getServerSideProps() {
 export default function ReactMap({ initialTrees, testMuni }) {
   const { data: session, status } = useSession();
   const loading = status === "loading";
-  const onlyParks = testMuni[0].zone[0].greenArea;
+  const onlyParks = testMuni[0].zone[0].zoneEvaluation[0].greenArea;
   const ParkContext = createContext();
+
+  useEffect(() => {
+    // console.log(initialTrees);
+    console.log(testMuni);
+    console.log(onlyParks);
+  });
   // useEffect(() => {
   //   console.log("this are the details");
-  //   console.log(initialTrees[2].details);
+  //   console.log(testMuni);
   // });
 
   const MAPBOX_TOKEN =
     "pk.eyJ1IjoiZGl0b2xlZG9yIiwiYSI6ImNsM3E1OHR5ZjA5NTYzY21zaG8xeGJxMHgifQ.quteS-bAH31Y61dhDnnClw";
 
   const [viewport, setViewport] = useState({
-    latitude: initialTrees[0].latitude,
-    longitude: initialTrees[0].longitude,
+    latitude: -33.44056603180975,
+    longitude: -70.61151939629589,
     zoom: 12,
   });
 
   const [fetchedData, setFetchedData] = useState([]);
-
-  useEffect(() => {
-    // console.log(initialTrees);
-    console.log(onlyParks);
-  });
 
   const [selectedPark, setSelectedPark] = useState(fetchedData[0]);
 
@@ -140,7 +145,7 @@ export default function ReactMap({ initialTrees, testMuni }) {
                 ) : null}
               </ParkContext.Provider>
             </Map>
-            <Link href={"/newentry"}>
+            <Link href={"/newpark"}>
               <button
                 className={styles.popupButton}
                 style={{ color: "black", marginTop: "20px" }}

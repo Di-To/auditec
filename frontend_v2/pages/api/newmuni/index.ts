@@ -7,9 +7,10 @@ const prisma = new PrismaClient();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const tree: Prisma.TreeCreateInput = JSON.parse(req.body);
-    const savedTree = await prisma.tree.create({ data: tree });
-    res.status(200).json(savedTree);
+    // const municipality: Prisma.MunicipalityCreateInput = JSON.parse(req.body);
+    const municipality: Prisma.MunicipalityCreateInput = req.body;
+    const savedMuni = await prisma.municipality.create({ data: municipality });
+    res.status(200).json(savedMuni);
   } catch (err) {
     res.status(400).json({ message: "something went wrong"});
   }
