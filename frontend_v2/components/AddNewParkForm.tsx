@@ -6,19 +6,20 @@ const FormError = ({ errorMessage }) => {
   return <p className="text-red-300 mt-1">{errorMessage}</p>;
 };
 
-interface AddTreeFormProps {
+interface AddParkFormProps {
   onSubmit: any;
 }
 
 const initialValues = {
-  region: "",
-  municipality: "",
-  park: "",
+  zoneEvaluationId: "",
+  parkName: "",
+  location: "",
+  surface: "",
   latitude: "",
   longitude: ""
 }
 
-export default function AddTreeForm(props: AddTreeFormProps) {
+export default function AddParkForm(props: AddParkFormProps) {
   
   const [initialPosition, setInitialPosition] = useState({lat:undefined, lng:undefined})
 
@@ -39,17 +40,25 @@ export default function AddTreeForm(props: AddTreeFormProps) {
   const [values, setValues] = useState(initialValues)
 
   const handleInputChange = (e) => {
-    const {name, value} = e.target;
+    const {name, type, value} = e.target;
 
-    setValues ({
-      ...values,
-      [name]: value,
+    setValues (values => {
+      const nextValue = {
+      ...values}
+      switch(type) {
+        case 'number':
+          nextValue[name] = Number(value);
+          break
+        default: nextValue[name] = value
+      }
+      return nextValue
     });
   };
 
   const onSubmit = event => {
     event.preventDefault();
     props.onSubmit(values)
+    console.log("yo");
     console.log(values);
   } 
 
@@ -57,34 +66,35 @@ export default function AddTreeForm(props: AddTreeFormProps) {
     // <form className="flex flex-col" onSubmit={onSubmit}>
     <form className="flex flex-col" onSubmit={onSubmit}>
 
-        <input className='rounded p-2 text-xl w-full mb-2' type="text" id="fname" name="region" placeholder='region' 
-        value={values.region}
+        <input className='rounded p-2 text-xl w-full mb-2' type="number" id="fname" name="zoneEvaluationId" 
+        placeholder='zoneEvaluationId' 
+        value={values.zoneEvaluationId}
         onChange={handleInputChange}/>
         
 
-        <input className='rounded p-2 text-xl w-full mb-2' placeholder='municipality' 
+        <input className='rounded p-2 text-xl w-full mb-2' placeholder='parkName' 
         type="text" 
         id="fname" 
-        name="municipality" 
-        value={values.municipality}
+        name="parkName" 
+        value={values.parkName}
         onChange={handleInputChange}/>
 
-        <input className='rounded p-2 text-xl w-full mb-2' placeholder='park' 
+        <input className='rounded p-2 text-xl w-full mb-2' placeholder='location' 
         type="text" 
         id="fname" 
-        name="park" 
-        value={values.park}
+        name="location" 
+        value={values.location}
         onChange={handleInputChange}/>
 
-        {/* <input className='rounded p-2 text-xl w-full mb-2'  placeholder='picture' 
-        type="text" 
+        <input className='rounded p-2 text-xl w-full mb-2'  placeholder='surface' 
+        type="number" 
         id="fname" 
-        name="picture" 
-        value={values.picture}
-        onChange={handleInputChange}/> */}
+        name="surface" 
+        value={values.surface}
+        onChange={handleInputChange}/>
 
         <input className='rounded p-2 text-xl w-full mb-2' placeholder='latitude' 
-        type="text" 
+        type="number" 
         id="fname" 
         name="latitude" 
         value = {values.latitude}
@@ -92,7 +102,7 @@ export default function AddTreeForm(props: AddTreeFormProps) {
 
 
         <input className='rounded p-2 text-xl w-full mb-2' placeholder='longitude' 
-        type="text" 
+        type="number" 
         id="fname" 
         name="longitude" 
         value={values.longitude}

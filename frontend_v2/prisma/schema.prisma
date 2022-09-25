@@ -30,9 +30,9 @@ model Details {
 }
 
 model Country {
-  id         Int      @id @default(autoincrement())
-  coutryName String
-  region     Region[]
+  id          Int      @id @default(autoincrement())
+  countryName String
+  region      Region[]
 }
 
 model Region {
@@ -54,97 +54,103 @@ model Municipality {
 model Zone {
   id             Int              @id @default(autoincrement())
   municipality   Municipality     @relation(fields: [municipalityId], references: [id])
-  zoneName       String
   municipalityId Int
-  greenArea      GreenArea[]
-  zoneEvlaution  ZoneEvaluation[]
+  zoneName       String
+  zoneEvaluation ZoneEvaluation[]
 }
 
 model ZoneEvaluation {
-  id               Int         @id @default(autoincrement())
-  zoneName         String
-  zone             Zone        @relation(fields: [zoneEvaluationId], references: [id])
-  zoneEvaluationId Int
-  greenArea        GreenArea[]
+  id                     Int         @id @default(autoincrement())
+  zone                   Zone        @relation(fields: [zoneId], references: [id])
+  zoneId                 Int
+  zoneIdentificationName String
+  greenArea              GreenArea[]
 }
 
 model GreenArea {
-  id               Int            @id @default(autoincrement())
-  zone             Zone           @relation(fields: [zoneId], references: [id], onDelete: Cascade)
-  zoneEvaluation   ZoneEvaluation @relation(fields: [zoneEvaluationId], references: [id], onDelete: Cascade)
-  zoneId           Int
+  id               Int              @id @default(autoincrement())
+  zoneEvaluation   ZoneEvaluation   @relation(fields: [zoneEvaluationId], references: [id], onDelete: Cascade)
   zoneEvaluationId Int
   parkName         String
   location         String
   surface          Decimal
   latitude         Decimal
   longitude        Decimal
-  evaluation       Evaluation[]
+  grass            Grass[]
+  trees            Trees[]
+  infrastructure   Infrastructure[]
+  floorCovers      FloorCovers[]
+  sideWalks        SideWalks[]
+  cleaning         Cleaning[]
+  seasonFlowers    SeasonFlowers[]
 }
 
-model Evaluation {
-  id             Int              @id @default(autoincrement())
-  greenArea      GreenArea        @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
-  evaluationId   Int
-  date           DateTime
-  observation    String
-  grass          Grass[]
-  trees          Trees[]
-  infrastructure Infrastructure[]
-  floorCovers    FloorCovers[]
-  sideWalks      SideWalks[]
-  cleaning       Cleaning[]
-  seasonFlowers  SeasonFlowers[]
+model ParentEvaluation {
+  id                 Int                  @id @default(autoincrement())
+  evaluationId       Int
+  date               DateTime
+  observation        String
+  grassEval          GrassEval[]
+  treesEval          TreesEval[]
+  infrastructureEval InfrastructureEval[]
+  floorCoversEval    FloorCoversEval[]
+  sideWalksEval      SideWalksEval[]
+  cleaningEval       CleaningEval[]
+  seasonFlowersEval  SeasonFlowersEval[]
 }
 
 model Grass {
-  id         Int         @id @default(autoincrement())
-  evaluation Evaluation  @relation(fields: [grassId], references: [id], onDelete: Cascade)
-  grassId    Int
-  grassEval  GrassEval[]
+  id        Int         @id @default(autoincrement())
+  greenArea GreenArea   @relation(fields: [grassId], references: [id], onDelete: Cascade)
+  grassId   Int
+  grassEval GrassEval[]
 }
 
 model GrassEval {
-  id          Int      @id @default(autoincrement())
-  grass       Grass    @relation(fields: [grassEvalId], references: [id])
-  grassEvalId Int
-  grade       Int
-  date        DateTime
-  evalType    String
-  observation String
-  latitude    Decimal
-  longitude   Decimal
+  id           Int              @id @default(autoincrement())
+  grass        Grass            @relation(fields: [grassEvalId], references: [id])
+  grassEvalId  Int
+  grade        Int
+  date         DateTime
+  evalType     String
+  observation  String
+  latitude     Decimal
+  longitude    Decimal
+  parentEval   ParentEvaluation @relation(fields: [parentEvalId], references: [id])
+  parentEvalId Int
 }
 
 model Trees {
-  id         Int         @id @default(autoincrement())
-  evaluation Evaluation  @relation(fields: [treesId], references: [id], onDelete: Cascade)
-  treesId    Int
-  treesEval  TreesEval[]
+  id        Int         @id @default(autoincrement())
+  greenArea GreenArea   @relation(fields: [treesId], references: [id], onDelete: Cascade)
+  treesId   Int
+  treesEval TreesEval[]
 }
 
 model TreesEval {
-  id          Int      @id @default(autoincrement())
-  trees       Trees    @relation(fields: [treeEval], references: [id])
-  treeEval    Int
-  grade       Int
-  date        DateTime
-  evalType    String
-  observation String
-  latitude    Decimal
-  longitude   Decimal
+  id           Int              @id @default(autoincrement())
+  trees        Trees            @relation(fields: [treeEval], references: [id])
+  treeEval     Int
+  grade        Int
+  date         DateTime
+  evalType     String
+  observation  String
+  latitude     Decimal
+  longitude    Decimal
+  parentEval   ParentEvaluation @relation(fields: [parentEvalId], references: [id])
+  parentEvalId Int
 }
 
 model Infrastructure {
   id                 Int                  @id @default(autoincrement())
-  evaluation         Evaluation           @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
+  greenArea          GreenArea            @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
   greenAreaId        Int
   infrastructureEval InfrastructureEval[]
 }
 
 model InfrastructureEval {
-  id                   Int            @id @default(autoincrement())
-  infrastructe         Infrastructure @relation(fields: [infrastructureEvalId], references: [id])
+  id                   Int              @id @default(autoincrement())
+  infrastructe         Infrastructure   @relation(fields: [infrastructureEvalId], references: [id])
   infrastructureEvalId Int
   grade                Int
   date                 DateTime
@@ -152,18 +158,20 @@ model InfrastructureEval {
   observation          String
   latitude             Decimal
   longitude            Decimal
+  parentEval           ParentEvaluation @relation(fields: [parentEvalId], references: [id])
+  parentEvalId         Int
 }
 
 model FloorCovers {
   id              Int               @id @default(autoincrement())
-  evaluation      Evaluation        @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
+  greenArea       GreenArea         @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
   greenAreaId     Int
   floorCoversEval FloorCoversEval[]
 }
 
 model FloorCoversEval {
-  id                Int         @id @default(autoincrement())
-  floorCovers       FloorCovers @relation(fields: [floorCoversEvalId], references: [id])
+  id                Int              @id @default(autoincrement())
+  floorCovers       FloorCovers      @relation(fields: [floorCoversEvalId], references: [id])
   floorCoversEvalId Int
   grade             Int
   date              DateTime
@@ -171,37 +179,41 @@ model FloorCoversEval {
   observation       String
   latitude          Decimal
   longitude         Decimal
+  parentEval        ParentEvaluation @relation(fields: [parentEvalId], references: [id])
+  parentEvalId      Int
 }
 
 model SideWalks {
   id            Int             @id @default(autoincrement())
-  evaluation    Evaluation      @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
+  greenArea     GreenArea       @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
   greenAreaId   Int
   sideWalksEval SideWalksEval[]
 }
 
 model SideWalksEval {
-  id          Int       @id @default(autoincrement())
-  sideWalks   SideWalks @relation(fields: [sideWalksId], references: [id])
-  sideWalksId Int
-  grade       Int
-  date        DateTime
-  evalType    String
-  observation String
-  latitude    Decimal
-  longitude   Decimal
+  id           Int              @id @default(autoincrement())
+  sideWalks    SideWalks        @relation(fields: [sideWalksId], references: [id])
+  sideWalksId  Int
+  grade        Int
+  date         DateTime
+  evalType     String
+  observation  String
+  latitude     Decimal
+  longitude    Decimal
+  parentEval   ParentEvaluation @relation(fields: [parentEvalId], references: [id])
+  parentEvalId Int
 }
 
 model Cleaning {
   id           Int            @id @default(autoincrement())
-  evaluation   Evaluation     @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
+  greenArea    GreenArea      @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
   greenAreaId  Int
   cleaningEval CleaningEval[]
 }
 
 model CleaningEval {
-  id             Int      @id @default(autoincrement())
-  cleaning       Cleaning @relation(fields: [cleaningEvalId], references: [id])
+  id             Int              @id @default(autoincrement())
+  cleaning       Cleaning         @relation(fields: [cleaningEvalId], references: [id])
   cleaningEvalId Int
   grade          Int
   date           DateTime
@@ -209,18 +221,20 @@ model CleaningEval {
   observation    String
   latitude       Decimal
   longitude      Decimal
+  parentEval     ParentEvaluation @relation(fields: [parentEvalId], references: [id])
+  parentEvalId   Int
 }
 
 model SeasonFlowers {
   id                  Int                 @id @default(autoincrement())
-  evaluation          Evaluation          @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
+  greenArea           GreenArea           @relation(fields: [greenAreaId], references: [id], onDelete: Cascade)
   greenAreaId         Int
   seasonalFlowersEval SeasonFlowersEval[]
 }
 
 model SeasonFlowersEval {
-  id                    Int           @id @default(autoincrement())
-  seasonalFlowers       SeasonFlowers @relation(fields: [seasonalFlowersEvalId], references: [id])
+  id                    Int              @id @default(autoincrement())
+  seasonalFlowers       SeasonFlowers    @relation(fields: [seasonalFlowersEvalId], references: [id])
   seasonalFlowersEvalId Int
   grade                 Int
   date                  DateTime
@@ -228,4 +242,6 @@ model SeasonFlowersEval {
   observation           String
   latitude              Decimal
   longitude             Decimal
+  parentEval            ParentEvaluation @relation(fields: [parentEvalId], references: [id])
+  parentEvalId          Int
 }
